@@ -1,5 +1,5 @@
 [SVCS]
-  DataBase=
+  DataBase=origin master
   MenuItem=Blame '%F'
     Command=git
     Arguments=difftool #F
