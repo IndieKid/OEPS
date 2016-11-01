@@ -1,5 +1,4 @@
 .\obj\main.o: project_files\main.c
-.\obj\main.o: project_files\main.h
 .\obj\main.o: .\sys\stm32l1xx.h
 .\obj\main.o: .\sys\core_cm3.h
 .\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
