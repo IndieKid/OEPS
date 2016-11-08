@@ -1,63 +1,51 @@
 #include "stm32l1xx.h"
 
-void TIM2_IRQHandler(void)
+//http://visualgdb.com/tutorials/arm/stm32/pwm/
+
+void InitializeLEDs()
 {
-	TIM2->SR &= ~TIM_SR_UIF;
-	GPIOB->ODR ^= GPIO_OTYPER_ODR_6;
+		GPIO_InitTypeDef gpioStructure;
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+
+    gpioStructure.GPIO_Pin = GPIO_Pin_6;
+    gpioStructure.GPIO_Mode = GPIO_Mode_AF;
+    gpioStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOD, &gpioStructure);
 }
 
-void TIM6_IRQHandler(void)
+void InitializeTimer(int period)
 {
-	TIM6->SR &= ~TIM_SR_UIF;
-	GPIOB->ODR ^= GPIO_OTYPER_ODR_7;
+		TIM_TimeBaseInitTypeDef timerInitStructure;
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+    timerInitStructure.TIM_Prescaler = 40000;
+    timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    timerInitStructure.TIM_Period = period;
+    timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseInit(TIM4, &timerInitStructure);
+    TIM_Cmd(TIM4, ENABLE);
+}
+
+void InitializePWMChannel()
+{
+    TIM_OCInitTypeDef outputChannelInit = {0,};
+    outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
+    outputChannelInit.TIM_Pulse = 400;
+    outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
+    outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
+ 
+    TIM_OC1Init(TIM4, &outputChannelInit);
+    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
+ 
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_TIM4);
 }
 
 int main()
 {
-	GPIO_InitTypeDef port;
-	
-	TIM_TimeBaseInitTypeDef timer;
-
-	NVIC_SetPriority(TIM2_IRQn, 1);
-	NVIC_EnableIRQ(TIM2_IRQn);
-
-	NVIC_SetPriority(TIM6_IRQn, 1);
-	NVIC_EnableIRQ(TIM6_IRQn);
-
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-
-	port.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-	port.GPIO_Mode = GPIO_Mode_OUT;
-	port.GPIO_OType = GPIO_OType_PP;
-	port.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	port.GPIO_Speed = GPIO_Speed_2MHz;
-
-	GPIO_Init(GPIOB, &port);
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);	//RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-
-	timer.TIM_Prescaler = 2096;					//TIM2->PSC = 0x0830;
-	timer.TIM_Period = 500;					//TIM2->ARR = 0x01F4;
-	TIM2->DIER |= TIM_DIER_UIE;
-	TIM2->CR1 |= TIM_CR1_CEN;
-	timer.TIM_CounterMode = TIM_CounterMode_Up;
-    timerInitStructure.TIM_Period = period;
-    timer.TIM_ClockDivision = TIM_CKD_DIV1;
-    timer.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM4, &timer);
-	TIM_Cmd(TIM2, ENABLE);
-
-	RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;			//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
-
-	TIM6->PSC = 0x0830;					//TIM6->PSC = 2096;
-	TIM6->ARR = 0x01F4;					//TIM6->ARR = 500;	
-	TIM6->DIER |= TIM_DIER_UIE;
-	TIM6->CR1 |= TIM_CR1_CEN;
-
-	GPIO_SetBits(GPIOB, GPIO_Pin_6);
-
-	while (1)
-	{
-		
-	}
+	InitializeLEDs();
+	InitializeTimer(500);
+	InitializePWMChannel();
+	for (;;)
+    {
+    }
 }

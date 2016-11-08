@@ -1,5 +1,5 @@
 Dependencies for Project 'Project', Target 'STML1-DISCOVERY': (DO NOT MODIFY !)
-F (.\project_files\main.c)(0x5821C9E0)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I .\sys -I .\inc -I .\project_files-I"C:\Users\Philipp Morozov\Dropbox\Workspace\uVision\STM32L1\Blinking Leds 2\RTE"-IC:\Keil_v5\ARM\PACK\Keil\STM32L1xx_DFP\1.2.0\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32L152xC -DUSE_STDPERIPH_DRIVER -DSTM32L1XX_MDP -DUSE_DEFAULT_TIMEOUT_CALLBACK-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
+F (.\project_files\main.c)(0x5821CDC5)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I .\sys -I .\inc -I .\project_files-I"C:\Users\Philipp Morozov\Dropbox\Workspace\uVision\STM32L1\Blinking Leds 2\RTE"-IC:\Keil_v5\ARM\PACK\Keil\STM32L1xx_DFP\1.2.0\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32L152xC -DUSE_STDPERIPH_DRIVER -DSTM32L1XX_MDP -DUSE_DEFAULT_TIMEOUT_CALLBACK-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
 I (.\sys\stm32l1xx.h)(0x58219AA8)
 I (.\sys\core_cm3.h)(0x58219AA8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E8476)

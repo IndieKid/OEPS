@@ -1,41 +1,51 @@
 #include "stm32l1xx.h"
 
-void delay(void) {
-  volatile uint32_t i;
-    for (i=1; i != 0xF000; i++);
-  }
+//
+
+void InitializeLEDs()
+{
+		GPIO_InitTypeDef gpioStructure;
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+
+    gpioStructure.GPIO_Pin = GPIO_Pin_6;
+    gpioStructure.GPIO_Mode = GPIO_Mode_AF;
+    gpioStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOD, &gpioStructure);
+}
+
+void InitializeTimer(int period)
+{
+		TIM_TimeBaseInitTypeDef timerInitStructure;
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+    timerInitStructure.TIM_Prescaler = 40000;
+    timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    timerInitStructure.TIM_Period = period;
+    timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseInit(TIM4, &timerInitStructure);
+    TIM_Cmd(TIM4, ENABLE);
+}
+
+void InitializePWMChannel()
+{
+    TIM_OCInitTypeDef outputChannelInit = {0,};
+    outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
+    outputChannelInit.TIM_Pulse = 400;
+    outputChannelInit.TIM_OutputState = TIM_OutputState_Enable;
+    outputChannelInit.TIM_OCPolarity = TIM_OCPolarity_High;
+ 
+    TIM_OC1Init(TIM4, &outputChannelInit);
+    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
+ 
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_TIM4);
+}
 
 int main()
 {
-	GPIO_InitTypeDef port;
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-
-	port.GPIO_Pin = GPIO_Pin_6;
-	port.GPIO_Mode = GPIO_Mode_AF;
-	port.GPIO_OType = GPIO_OType_PP;
-	port.GPIO_Speed = GPIO_Speed_2MHz;
-	
-	GPIO_Init(GPIOB, &port);
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-
-	
-	TIM4->CCER |= (TIM_CCER_CC1E|TIM_CCER_CC3E|TIM_CCER_CC4E);
-	TIM4->CCMR1|=(TIM_CCMR1_OC2M_0| TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2);
-	TIM4->CCMR2|=(TIM_CCMR2_OC3M_0 | TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC4M_0 | TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2);
-	
-	
-	TIM4->CR1 |= TIM_CR1_CEN;
-	
-
-	
-	
-
-  while(1)
-  {
-    
-      TIM4->CCR2=13107; //0..65535
-      
-  }
-
+	InitializeLEDs();
+	InitializeTimer(500);
+	InitializePWMChannel();
+	for (;;)
+    {
+    }
 }
